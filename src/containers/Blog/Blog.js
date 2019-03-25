@@ -4,7 +4,7 @@ import Post from '../../components/Post/Post';
 import Teaser from '../../components/Teaser/Teaser';
 import NewPost from '../../components/NewPost/NewPost';
 
-import axios from 'axios';
+import axios from '../../axios';
 
 class Blog extends Component {
   state = {
@@ -13,7 +13,7 @@ class Blog extends Component {
   }
 
   componentDidMount() {
-    axios.get('http://jsonplaceholder.typicode.com/posts')
+    axios.get('posts')
       .then(response => {
         const posts = response.data.slice(0, 6);
 

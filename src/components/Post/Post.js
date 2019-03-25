@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import classes from './Post.module.css';
-import axios from 'axios';
-
+import axios from '../../axios';
 class Post extends Component {
   state = {
     loadedPost: null,
@@ -12,13 +11,23 @@ class Post extends Component {
       if (this.state.loadedPost == null
         || this.state.loadedPost.id !== this.props.postId) {
         axios
-          .get('http://jsonplaceholder.typicode.com/posts/' + this.props.postId)
+          .get('posts/' + this.props.postId)
           .then(response => { // response.data
             this.setState({
               loadedPost: response.data
             });
           });
       }
+    }
+  }
+
+  deletePost = () => {
+    if (this.state.loadedPost) {
+      axios
+        .delete('posts/' + this.state.loadedPost.id)
+        .then(response => { // response.data
+          // TODO delete post properly
+        });
     }
   }
 
@@ -31,7 +40,7 @@ class Post extends Component {
           <strong>{this.state.loadedPost.author}</strong>
           <p>{this.state.loadedPost.body}</p>
     
-          <button>Delete</button>
+          <button onClick={this.deletePost}>Delete</button>
         </div>
       );
     }
