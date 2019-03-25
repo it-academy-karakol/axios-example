@@ -4,17 +4,50 @@ import Post from '../../components/Post/Post';
 import Teaser from '../../components/Teaser/Teaser';
 import NewPost from '../../components/NewPost/NewPost';
 
+import axios from 'axios';
+
 class Blog extends Component {
+  state = {
+    posts: [],
+    selectedPost: null,
+  }
+
+  componentDidMount() {
+    axios.get('http://jsonplaceholder.typicode.com/posts')
+      .then(response => {
+        const posts = response.data.slice(0, 6);
+
+        this.setState({ posts });
+      });
+
+  }
+
+  postSelectedHandler = id => {
+    this.setState({
+      selectedPost: id
+    })
+  }
+
   render() {
+    let posts = <p>No posts</p>;
+    
+    if (this.state.posts.length > 0) {
+      posts = this.state.posts.map(
+        post => <Teaser
+          key={post.id}
+          title={post.title}
+          body={post.body}
+          clickHandler={() => this.postSelectedHandler(post.id)} />
+      );
+    }
+
     return (
       <div className={classes.Blog}>
         <div className={classes.Posts}>
-          <Teaser title="test1" body="Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet praesentium deserunt ipsam voluptas id quisquam velit, in tenetur tempora, neque facilis iure. Voluptates asperiores itaque nulla reiciendis consequuntur, qui debitis." />
-          <Teaser title="test2" body="Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet praesentium deserunt ipsam voluptas id quisquam velit, in tenetur tempora, neque facilis iure. Voluptates asperiores itaque nulla reiciendis consequuntur, qui debitis." />
-          <Teaser title="test3" body="Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet praesentium deserunt ipsam voluptas id quisquam velit, in tenetur tempora, neque facilis iure. Voluptates asperiores itaque nulla reiciendis consequuntur, qui debitis." />
+          {posts}
         </div>
         <div className={classes.Post}>
-          <Post title="test3" body="Lorem ipsum dolor sit amet consectetur adipisicing elit. Amet praesentium deserunt ipsam voluptas id quisquam velit, in tenetur tempora, neque facilis iure. Voluptates asperiores itaque nulla reiciendis consequuntur, qui debitis." />
+          <Post postId={this.state.selectedPost} />
         </div>
         <div className={classes.NewPost}>
           <NewPost />
