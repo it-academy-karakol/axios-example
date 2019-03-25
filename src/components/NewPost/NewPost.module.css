@@ -1,0 +1,4 @@
+.NewPost input,
+.NewPost textarea {
+  width: 100%;
+}
