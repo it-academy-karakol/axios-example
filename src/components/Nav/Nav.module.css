@@ -1,0 +1,8 @@
+.Nav a {
+  font-weight: bold;
+  color: blueviolet;
+  text-decoration: none;
+}
+.Nav .Active {
+  text-decoration: underline;
+}

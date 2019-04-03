@@ -5,11 +5,15 @@ import Teaser from '../../components/Teaser/Teaser';
 import NewPost from '../../components/NewPost/NewPost';
 
 import axios from '../../axios';
+import { Redirect, Switch, Link, Route } from 'react-router-dom';
+import Page404 from '../../components/Page404';
+import Page403 from '../../components/Page403';
 
 class Blog extends Component {
   state = {
     posts: [],
     selectedPost: null,
+    authenticated: false
   }
 
   componentDidMount() {
@@ -33,25 +37,35 @@ class Blog extends Component {
     
     if (this.state.posts.length > 0) {
       posts = this.state.posts.map(
-        post => <Teaser
-          key={post.id}
-          title={post.title}
-          body={post.body}
-          clickHandler={() => this.postSelectedHandler(post.id)} />
+        post => (
+          <Link to={'/posts/' + post.id} key={post.id}>
+            <Teaser
+              title={post.title}
+              body={post.body}
+              clickHandler={() => this.postSelectedHandler(post.id)} />
+          </Link>
+        )
       );
     }
 
     return (
       <div className={classes.Blog}>
-        <div className={classes.Posts}>
-          {posts}
-        </div>
-        <div className={classes.Post}>
-          <Post postId={this.state.selectedPost} />
-        </div>
-        <div className={classes.NewPost}>
-          <NewPost />
-        </div>
+        <Switch>
+          <Route path="/" exact render={() => (
+            <div className={classes.Posts}>
+                {posts}
+              </div>
+            )} />
+
+          {this.state.authenticated
+            ? <Route path="/new" component={NewPost} />
+            : <Redirect from="/new" to="/access-denied" /> }
+          
+          <Route path="/posts/:id" component={Post} />
+
+          <Route path="/access-denied" component={Page403} />
+          <Route path="/" component={Page404} />
+        </Switch>
       </div>
     );
   }

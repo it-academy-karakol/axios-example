@@ -6,12 +6,14 @@ class Post extends Component {
     loadedPost: null,
   }
 
-  componentDidUpdate() {
-    if (this.props.postId) {
+  componentDidMount() {
+    if (this.props.match.params.id) {
+      const id = +this.props.match.params.id;
+
       if (this.state.loadedPost == null
-        || this.state.loadedPost.id !== this.props.postId) {
+        || this.state.loadedPost.id !== id) {
         axios
-          .get('posts/' + this.props.postId)
+          .get('posts/' + id)
           .then(response => { // response.data
             this.setState({
               loadedPost: response.data
@@ -26,7 +28,8 @@ class Post extends Component {
       axios
         .delete('posts/' + this.state.loadedPost.id)
         .then(response => { // response.data
-          // TODO delete post properly
+          // this.props.history.push('/');
+          this.props.history.replace('/new'); // redirect
         });
     }
   }
